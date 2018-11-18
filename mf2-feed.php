@@ -24,6 +24,7 @@ register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
  * @author Matthias Pfefferle
  */
 class Mf2Feed {
+
 	/**
 	 * init function
 	 */
@@ -57,7 +58,7 @@ class Mf2Feed {
 	 * @param boolean $for_comments true if it is a comment-feed
 	 */
 	public static function do_feed_mf2( $for_comments ) {
-		require_once dirname( __FILE__ ) . '/includes/class-mf2-feed-entry.php';
+		include_once dirname( __FILE__ ) . '/includes/class-mf2-feed-entry.php';
 
 		if ( $for_comments ) {
 			$post = new Mf2_Feed_Entry( get_the_ID() );
@@ -68,16 +69,16 @@ class Mf2Feed {
 			$items['items'][] = $post;
 		} else {
 			$items = array(
-				"items" => array(
+				'items' => array(
 					array(
-						'type' => array( 'h-feed' ),
+						'type'       => array( 'h-feed' ),
 						'properties' => array(
-							'name' => array( get_bloginfo( 'name' ) ),
+							'name'    => array( get_bloginfo( 'name' ) ),
 							'summary' => array( get_bloginfo( 'description' ) ),
-							'url' => array( site_url( '/' ) )
-						)
-					)
-				)
+							'url'     => array( site_url( '/' ) ),
+						),
+					),
+				),
 			);
 
 			while ( have_posts() ) {
@@ -101,10 +102,10 @@ class Mf2Feed {
 		}
 
 		/*
-		 * Options to be passed to json_encode()
-		 *
-		 * @param int $options The current options flags
-		 */
+		* Options to be passed to json_encode()
+		*
+		* @param int $options The current options flags
+		*/
 		$options = apply_filters( 'mf2_feed_options', $options );
 
 		$json_str = wp_json_encode( $json, $options );
@@ -118,10 +119,10 @@ class Mf2Feed {
 	 * @param boolean $for_comments true if it is a comment-feed
 	 */
 	public static function do_feed_jf2( $for_comments ) {
-		require_once dirname( __FILE__ ) . '/includes/class-mf2-feed-entry.php';
+		include_once dirname( __FILE__ ) . '/includes/class-mf2-feed-entry.php';
 
 		if ( $for_comments ) {
-			$post = new Mf2_Feed_Entry( get_the_ID(), $for_comments );
+			$post  = new Mf2_Feed_Entry( get_the_ID(), $for_comments );
 			$items = $post->to_jf2();
 		} else {
 			$items = array( 'type' => 'feed' );
@@ -147,10 +148,10 @@ class Mf2Feed {
 		}
 
 		/*
-		 * Options to be passed to json_encode()
-		 *
-		 * @param int $options The current options flags
-		 */
+		* Options to be passed to json_encode()
+		*
+		* @param int $options The current options flags
+		*/
 		$options = apply_filters( 'jf2_feed_options', $options );
 
 		$json_str = wp_json_encode( $json, $options );
@@ -161,8 +162,8 @@ class Mf2Feed {
 	/**
 	 * adds "mf2" content-type
 	 *
-	 * @param string $content_type the default content-type
-	 * @param string $type the feed-type
+	 * @param  string $content_type the default content-type
+	 * @param  string $type         the feed-type
 	 * @return string the as1 content-type
 	 */
 	public static function feed_content_type( $content_type, $type ) {
@@ -180,7 +181,7 @@ class Mf2Feed {
 	/**
 	 * add 'feed' and 'pretty' as a valid query variables.
 	 *
-	 * @param array $vars
+	 * @param  array $vars
 	 * @return array
 	 */
 	public static function query_vars( $vars ) {
@@ -194,16 +195,15 @@ class Mf2Feed {
 	 * Echos autodiscovery links
 	 */
 	public static function add_html_header() {
-		if ( is_singular() ) {
-		?>
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'mf2' ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'mf2' ) ); ?>" />
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'jf2' ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'jf2' ) ); ?>" />
-		<?php
-	} elseif ( is_home() ) {
-		?>
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'mf2' ) ); ?>" href="<?php echo esc_url( get_feed_link( 'mf2' ) ); ?>" />
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'jf2' ) ); ?>" href="<?php echo esc_url( get_feed_link( 'jf2' ) ); ?>" />
-		<?php
+		$string = '<link rel="alternate" type="%1$s" title="%2$s" href="%3$s" />' . PHP_EOL;
+		/* translators: Title */
+		$title = sprintf( __( '%1s Feed', 'mf2-feed' ), get_bloginfo( 'name' ) );
+		foreach ( array( 'mf2', 'jf2' ) as $type ) {
+			if ( is_singular() ) {
+				printf( $string, esc_attr( feed_content_type( $type ) ), '', esc_url( get_post_comments_feed_link( null, $type ) ) );
+			} elseif ( is_home() ) {
+				printf( $string, esc_attr( feed_content_type( $type ) ), $title, esc_url( get_feed_link( $type ) ) );
+			}
 		}
 	}
 

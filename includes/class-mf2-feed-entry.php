@@ -78,7 +78,7 @@ class Mf2_Feed_Entry {
 	}
 
 	/**
-	 * Display the post content. Optinally allows post ID to be passed
+	 * Display the post content. Optionally allows post ID to be passed
 	 * @uses the_content()
 	 *
 	 * @param int $id Optional. Post ID.
@@ -87,7 +87,7 @@ class Mf2_Feed_Entry {
 	 */
 	private function get_content_by_id( $post_id = 0, $more_link_text = null, $stripteaser = false ) {
 		global $post;
-		$post = get_post( $post_id );
+		$post = get_post( $post_id ); // phpcs:ignore
 		setup_postdata( $post, $more_link_text, $stripteaser );
 		$content = get_the_content();
 		wp_reset_postdata( $post );
@@ -105,7 +105,7 @@ class Mf2_Feed_Entry {
 	 */
 	private function get_excerpt_by_id( $post_id = 0, $more_link_text = null, $stripteaser = false ) {
 		global $post;
-		$post = get_post( $post_id );
+		$post = get_post( $post_id ); // phpcs:ignore
 		setup_postdata( $post, $more_link_text, $stripteaser );
 		$content = get_the_excerpt();
 		wp_reset_postdata( $post );

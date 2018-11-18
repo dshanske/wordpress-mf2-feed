@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress_MF2_Feed">
+	<description>MF2 Feed Standards</description>
+
+	<file>./mf2-feed.php</file>
+	<file>./includes/</file>
+	<exclude-pattern>*/includes/*\.(inc|css|js|svg)</exclude-pattern>
+	<rule ref="PHPCompatibility"/>
+	<config name="testVersion" value="5.3-"/>
+	<rule ref="PHPCompatibilityWP"/>
+	<config name="minimum_supported_wp_version" value="4.7"/>
+	<rule ref="WordPress.WP.DeprecatedFunctions" />
+
+	<rule ref="WordPress-Core">
+		<exclude name="WordPress.Security.ValidatedSanitizedInput" />
+		<exclude name="WordPress.Security.NonceVerification" />
+	</rule>
+	<rule ref="WordPress.Files.FileName">
+	<properties>
+	<property name="strict_class_file_names" value="false" />
+	</properties>
+	</rule>
+
+	<rule ref="WordPress-Extra" />
+        <rule ref="WordPress.WP.I18n"/>
+	<config name="text_domain" value="mf2-feed,default"/>
+</ruleset>
